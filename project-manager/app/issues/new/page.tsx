@@ -25,6 +25,19 @@ const NewIssuePage = () => {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      setIsSubmitting(true);
+      // If your http call might be reused elsewhere or is becoming complex, extract it to it's own module.
+      await axios.post('/api/issues', data);
+      router.push('/issues');
+    }
+    catch (error) {
+      setError('An unexpected error occurred.');
+      setIsSubmitting(false);
+    }
+  })
+
   return (
     <div className='max-w-xl '>
       {error &&
@@ -35,17 +48,7 @@ const NewIssuePage = () => {
 
       <form
         className=' space-y-3'
-        onSubmit={handleSubmit(async (data) => {
-          try {
-            setIsSubmitting(true);
-            await axios.post('/api/issues', data);
-            router.push('/issues');
-          }
-          catch (error) {
-            setError('An unexpected error occurred.');
-            setIsSubmitting(false);
-          }
-        })}
+        onSubmit={onSubmit}
       >
 
         <ErrorMessage >
