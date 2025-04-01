@@ -1,14 +1,14 @@
 import { IssueStatusBadge } from '@/app/components'
-import { Heading, Flex, Card } from '@radix-ui/themes'
+import { Heading, Flex, Card, Text } from '@radix-ui/themes'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
-import {Issue} from '@prisma/client';
+import { Issue } from '@prisma/client';
 
-const IssueDetails = ({issue}: {issue: Issue}) => {
+const IssueDetails = ({ issue }: { issue: Issue }) => {
     {/* Flex and Heading are radix components. They're essentially H1 tag (but can be modified) and a flexbox 
             and they reduce how much tailwind is needed */}
-  return (
-    
+    return (
+        <>
             <Heading>{issue.title}</Heading>
             <Flex gap='3' my='2'>
                 <IssueStatusBadge status={issue.status} />
@@ -19,7 +19,8 @@ const IssueDetails = ({issue}: {issue: Issue}) => {
                     {issue.description}
                 </ReactMarkdown>
             </Card>
-  )
+        </>
+    )
 }
 
 export default IssueDetails
