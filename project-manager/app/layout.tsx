@@ -1,9 +1,9 @@
-import { Theme } from '@radix-ui/themes'
+import { Container, Theme } from '@radix-ui/themes'
 import './globals.css'
 import './theme-config.css'
 import '@radix-ui/themes/styles.css'
 import type { Metadata } from "next";
-import {  Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./navbar";
 
@@ -18,9 +18,9 @@ import Navbar from "./navbar";
 // });
 
 const inter = Inter({
-	subsets: ["latin"],
-	display: "swap",
-	variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -42,7 +42,9 @@ export default function RootLayout({
         <Theme accentColor="grass" grayColor="gray" className={inter.variable}>
           <Navbar />
           <main className='p-5'>
-            {children}
+            <Container>
+              {children}
+            </Container>
           </main>
         </Theme>
       </body>
