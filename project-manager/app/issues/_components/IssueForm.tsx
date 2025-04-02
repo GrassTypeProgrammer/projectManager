@@ -1,19 +1,18 @@
 'use client';
 
-import { Button, Callout, TextField } from '@radix-ui/themes';
-import dynamic from 'next/dynamic';
-const SimpleMDE = dynamic(() => import('react-simplemde-editor'), { ssr: false })
-import "easymde/dist/easymde.min.css";
-import { useForm, Controller } from "react-hook-form";
-import axios from "axios";
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { issueSchema } from '@/app/validationSchemas';
-import { z } from 'zod';
 import ErrorMessage from '@/app/components/errorMessage';
 import Spinner from '@/app/components/spinner';
+import { issueSchema } from '@/app/validationSchemas';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Issue } from '@prisma/client';
+import { Button, Callout, TextField } from '@radix-ui/themes';
+import axios from "axios";
+import "easymde/dist/easymde.min.css";
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { Controller, useForm } from "react-hook-form";
+import SimpleMDE from 'react-simplemde-editor';
+import { z } from 'zod';
 
 // This creates the type based on the IssueSchema
 type IssueFormData = z.infer<typeof issueSchema>;
@@ -48,6 +47,7 @@ const IssueForm = ({ issue }: Props) => {
       // Refresh contents of current route
       router.refresh();
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     catch (error) {
       setError('An unexpected error occurred.');
       setIsSubmitting(false);

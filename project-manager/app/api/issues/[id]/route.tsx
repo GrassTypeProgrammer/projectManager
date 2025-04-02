@@ -4,13 +4,13 @@ import { issueSchema } from "@/app/validationSchemas";
 import { prisma } from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-interface Props {
-    params: { id: string },
-}
 
 // TODO Update status as well
-export async function PATCH(request: NextRequest, props: Props) {
-    const params = await props.params;
+export async function PATCH(
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
+) {
+    const { id } = await params;
     const body = await request.json();
     // Validate
     const validation = issueSchema.safeParse(body);
@@ -22,7 +22,7 @@ export async function PATCH(request: NextRequest, props: Props) {
 
     // get issue from database
     const issue = await prisma.issue.findUnique({
-        where: { id: parseInt(params.id) }
+        where: { id: parseInt(id) }
     });
 
     // return error if issue does not exist
