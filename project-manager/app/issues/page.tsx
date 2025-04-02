@@ -48,6 +48,16 @@ const Issues = async () => {
       </Table.Root>
     </div>
   )
-}
+};
+
+// Opts out of static rendering. If this page is rendered statically, it will never get the new issues that have been added 
+//  to the database (until it is redeployed)
+export const dynamic = 'force-dynamic';
+
+// Does the same as dynamic = 'force-dynamic' eg: revalidate every 0 seconds
+// export const revalidate = 0;
+
+// revalidate data every 60 seconds
+// export const revalidate = 60;
 
 export default Issues
