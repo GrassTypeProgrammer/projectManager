@@ -33,8 +33,16 @@ const IssueForm = ({ issue }: Props) => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       setIsSubmitting(true);
-      // If your http call might be reused elsewhere or is becoming complex, extract it to it's own module.
-      await axios.post('/api/issues', data);
+
+      if (issue) {
+        // edit
+        await axios.patch('/api/issues/' + issue.id, data)
+      }
+      else {
+        // If your http call might be reused elsewhere or is becoming complex, extract it to it's own module.
+        // create new
+        await axios.post('/api/issues', data);
+      }
       router.push('/issues');
     }
     catch (error) {
@@ -73,7 +81,7 @@ const IssueForm = ({ issue }: Props) => {
 
 
         <Button disabled={isSubmitting}>
-          Submit New Issue
+          {issue ? 'Update Issue' : 'Submit New Issue'} {' '}
           {isSubmitting && <Spinner />}
         </Button>
       </form>
