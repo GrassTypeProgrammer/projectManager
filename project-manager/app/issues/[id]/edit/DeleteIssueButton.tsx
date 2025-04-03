@@ -1,8 +1,12 @@
 'use client';
 
 import { AlertDialog, Button, Flex } from '@radix-ui/themes'
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
 
 const DeleteIssueButton = ({ issueID }: { issueID: number }) => {
+    const router = useRouter();
+    
     return (
         <AlertDialog.Root>
             <AlertDialog.Trigger>
@@ -15,14 +19,19 @@ const DeleteIssueButton = ({ issueID }: { issueID: number }) => {
                 <AlertDialog.Description>
                     Are you sure you want to delete this issue? This action cannot be undone.
                 </AlertDialog.Description>
-                
+
                 <Flex mt='4' gap='3'>
                     <AlertDialog.Cancel>
                         {/* The cancel button automatically closes the dialog box */}
                         <Button variant='soft' color='gray'>Cancel</Button>
                     </AlertDialog.Cancel>
                     <AlertDialog.Action>
-                        <Button color='red'>Delete Issue</Button>
+                        <Button color='red' onClick={async () => {
+                            await axios.delete('/api/issues/' + issueID);
+                            router.push('/issues');
+                            // refresh so it doesn't load from the cache
+                            router.refresh();
+                        }}>Delete Issue</Button>
                     </AlertDialog.Action>
                 </Flex>
             </AlertDialog.Content>
