@@ -43,7 +43,7 @@ const IssueForm = ({ issue }: Props) => {
         await axios.post('/api/issues', data);
       }
 
-      router.push('/issues');
+      router.push('/issues/list');
       // Refresh contents of current route
       router.refresh();
     }
