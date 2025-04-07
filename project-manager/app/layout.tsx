@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./navbar";
+import AuthProvider from './auth/Provider';
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -39,14 +40,16 @@ export default function RootLayout({
         // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         className={inter.variable}
       >
-        <Theme accentColor="grass" grayColor="gray" className={inter.variable}>
-          <Navbar />
-          <main className='p-5'>
-            <Container>
-              {children}
-            </Container>
-          </main>
-        </Theme>
+        <AuthProvider>
+          <Theme accentColor="grass" grayColor="gray" className={inter.variable}>
+            <Navbar />
+            <main className='p-5'>
+              <Container>
+                {children}
+              </Container>
+            </main>
+          </Theme>
+        </AuthProvider>
       </body>
     </html>
   );
