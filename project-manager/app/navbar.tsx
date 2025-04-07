@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import React from 'react'
 import { BsBugFill } from "react-icons/bs";
 import { useSession } from "next-auth/react"
-import { Box } from '@radix-ui/themes';
+import { Box, Container, Flex } from '@radix-ui/themes';
 
 type LinkData = {
   label: string,
@@ -26,36 +26,45 @@ const Navbar = () => {
   ]
 
   return (
-    <nav className='flex space-x-6 border-b mb-5 px-5 h-14 items-center'>
-      <Link href='/'>
-        <BsBugFill className='h-8 w-8' />
-      </Link>
+    <nav className='border-b mb-5 px-5 py-3'>
+      <Container>
 
-      <ul className='flex flex-1 space-x-6 justify-center'>
-        {links.map((item: LinkData) => {
-
-          return <li key={item.href}>
-            <Link
-              className={classNames(
-                item.href == currentPath ? 'text-zinc-900' : 'text-zinc-500',
-                'hover:text-zinc-800 transition-colors'
-              )}
-              href={item.href}>
-              {item.label}
+        <Flex justify='between'>
+          <Box>
+            <Link href='/'>
+              <BsBugFill className='h-8 w-8' />
             </Link>
-          </li>
-        })}
-      </ul>
+          </Box>
 
-      <Box>
-        {status == "authenticated" &&
-          <Link href="/api/auth/signout">Log out</Link>
-        }
+          <Flex align='center' gap='3'>
+            <ul className='flex flex-1 space-x-6 justify-center'>
+              {links.map((item: LinkData) => {
 
-        {status == "unauthenticated" &&
-          <Link href="/api/auth/signin">Log in</Link>
-        }
-      </Box>
+                return <li key={item.href}>
+                  <Link
+                    className={classNames(
+                      item.href == currentPath ? 'text-zinc-900' : 'text-zinc-500',
+                      'hover:text-zinc-800 transition-colors'
+                    )}
+                    href={item.href}>
+                    {item.label}
+                  </Link>
+                </li>
+              })}
+            </ul>
+          </Flex>
+
+          <Flex className='items-center'> 
+            {status == "authenticated" &&
+              <Link href="/api/auth/signout">Log out</Link>
+            }
+
+            {status == "unauthenticated" &&
+              <Link href="/api/auth/signin">Log in</Link>
+            }
+          </Flex>
+        </Flex>
+      </Container>
     </nav>
   )
 }
