@@ -54,7 +54,7 @@ const Navbar = () => {
             </ul>
           </Flex>
 
-          <Flex className='items-center'>
+          <Flex className='items-center min-w-8'>
             {status == "authenticated" &&
               <DropdownMenu.Root>
                 <DropdownMenu.Trigger>
