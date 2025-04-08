@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import React from 'react'
 import { BsBugFill } from "react-icons/bs";
 import { useSession } from "next-auth/react"
-import { Box, Container, Flex } from '@radix-ui/themes';
+import { Avatar, Box, Container, DropdownMenu, Flex, Text } from '@radix-ui/themes';
 
 type LinkData = {
   label: string,
@@ -54,9 +54,25 @@ const Navbar = () => {
             </ul>
           </Flex>
 
-          <Flex className='items-center'> 
+          <Flex className='items-center'>
             {status == "authenticated" &&
-              <Link href="/api/auth/signout">Log out</Link>
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                  <Avatar className='cursor-pointer' src={session.user!.image!} fallback='?' size='2' radius='full' />
+                </DropdownMenu.Trigger>
+
+                <DropdownMenu.Content>
+                  <DropdownMenu.Label>
+                    <Text size='2'>
+                      {session.user!.email}
+                    </Text>
+                  </DropdownMenu.Label>
+
+                  <DropdownMenu.Item>
+                    <Link href="/api/auth/signout">Log out</Link>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Root>
             }
 
             {status == "unauthenticated" &&
