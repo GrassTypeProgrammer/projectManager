@@ -7,6 +7,7 @@ import React from 'react'
 import { BsBugFill } from "react-icons/bs";
 import { useSession } from "next-auth/react"
 import { Avatar, Box, Container, DropdownMenu, Flex, Text } from '@radix-ui/themes';
+import { Skeleton } from './components';
 
 type LinkData = {
   label: string,
@@ -69,33 +70,38 @@ const AuthStatus = () => {
   // data contains the current users name/email/image/etc
   const { status, data: session } = useSession();
 
-  if (status == 'loading') {
-    // return empty element in place of login link to maintain layout
-    return <div className='w-8'/>;
-  }
-  else if (status == 'unauthenticated') {
-    return <Link className='nav-link self-center' href="/api/auth/signin">Log in</Link>
-  }
-
+  const avatarContainerWidth = '3rem';
 
   return <Flex className='items-center min-w-8'>
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger>
-        <Avatar className='cursor-pointer' src={session!.user!.image!} fallback='?' size='2' radius='full' />
-      </DropdownMenu.Trigger>
+    {status == 'loading' &&
+      <Skeleton width={avatarContainerWidth} />
+    }
 
-      <DropdownMenu.Content>
-        <DropdownMenu.Label>
-          <Text size='2'>
-            {session!.user!.email}
-          </Text>
-        </DropdownMenu.Label>
+    {status == 'unauthenticated' &&
+      <Link className='nav-link self-center' href="/api/auth/signin">Log in</Link>
+    }
 
-        <DropdownMenu.Item>
-          <Link className='nav-link' href="/api/auth/signout">Log out</Link>
-        </DropdownMenu.Item>
-      </DropdownMenu.Content>
-    </DropdownMenu.Root>
+    {status == 'authenticated' &&
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger>
+          <Box width={avatarContainerWidth}>
+            <Avatar className='cursor-pointer' src={session!.user!.image!} fallback='?' size='2' radius='full' />
+          </Box>
+        </DropdownMenu.Trigger>
+
+        <DropdownMenu.Content>
+          <DropdownMenu.Label>
+            <Text size='2'>
+              {session!.user!.email}
+            </Text>
+          </DropdownMenu.Label>
+
+          <DropdownMenu.Item>
+            <Link className='nav-link' href="/api/auth/signout">Log out</Link>
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
+    }
   </Flex>
 }
 
