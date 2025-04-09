@@ -14,13 +14,17 @@ datasource db {
 }
 
 model Issue {
-  id          Int      @id @default(autoincrement())
+  id               Int      @id @default(autoincrement())
   // 191 is the default length, so upping it to 255
-  title       String   @db.VarChar(255)
-  description String   @db.Text
-  status      Status   @default(OPEN)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  title            String   @db.VarChar(255)
+  description      String   @db.Text
+  status           Status   @default(OPEN)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  assignedToUserID String?  @db.VarChar(255)
+  // the items in fields get mapped to the items in references (to the type User)
+  // You need to add the reverse relation in the other model
+  assignedToUser   User?    @relation(fields: [assignedToUserID], references: [id])
 }
 
 enum Status {
@@ -28,9 +32,12 @@ enum Status {
   IN_PROGRESS
   CLOSED
 }
-/*--------------------------------------------------------------------
-    Google auth models
---------------------------------------------------------------------*/
+
+/**
+ * --------------------------------------------------------------------
+ * Google auth models
+ * --------------------------------------------------------------------
+ */
 
 model User {
   id            String          @id @default(cuid())
@@ -43,11 +50,12 @@ model User {
   sessions      Session[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
- 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  assignedIssues Issue[]
 }
- 
+
 model Account {
   id                       String  @id @default(cuid())
   userId                   String  @unique
@@ -63,35 +71,35 @@ model Account {
   session_state            String?
   refresh_token_expires_in Int?
   user                     User?   @relation(fields: [userId], references: [id])
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   @@unique([provider, providerAccountId])
   @@index([userId])
 }
- 
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id])
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   @@index([userId])
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@unique([identifier, token])
 }
- 
+
 // Optional for WebAuthn support
 model Authenticator {
   credentialID         String  @unique
@@ -102,8 +110,8 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([userId, credentialID])
 }
