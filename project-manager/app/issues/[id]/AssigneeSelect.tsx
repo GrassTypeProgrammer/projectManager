@@ -2,21 +2,29 @@
 
 import { User } from '@prisma/client';
 import { Select } from '@radix-ui/themes'
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import Skeleton from 'react-loading-skeleton';
 
 const AssigneeSelect = () => {
-    const [users, setUsers] = useState<User[]>([]);
+    const { data: users, error, isLoading } = useQuery<User[]>({
+        // identifies data in the cache
+        queryKey: ['users'],
+        // functino used to fetch data
+        queryFn: () => axios.get('/api/users').then(response => response.data),
+        // how long to use cached data before fetching it from the backend again. 60 * 1000 == 60 seconds
+        staleTime: 60 * 1000,
+        // how many times to try to fetch data if it fails
+        retry: 3,
+    })
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            const { data } = await axios.get<User[]>('/api/users');
-            setUsers(data);
-        };
-
-        fetchUsers();
-    },
-        [])
+    if (isLoading) {
+        return <Skeleton />
+    }
+    else if (error) {
+        return null;
+    }
 
     return (
         <Select.Root>
@@ -24,7 +32,7 @@ const AssigneeSelect = () => {
             <Select.Content>
                 <Select.Group>
                     <Select.Label>Suggestions</Select.Label>
-                    {users.map(user =>
+                    {users?.map(user =>
                         <Select.Item key={user.id} value={user.id}>{user.name}</Select.Item>
                     )}
                 </Select.Group>
