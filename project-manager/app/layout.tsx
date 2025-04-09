@@ -7,6 +7,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./navbar";
 import AuthProvider from './auth/Provider';
+import QueryClientProvider from './QueryClientProvider';
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -40,16 +41,18 @@ export default function RootLayout({
         // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         className={inter.variable}
       >
-        <AuthProvider>
-          <Theme accentColor="grass" grayColor="gray" className={inter.variable}>
-            <Navbar />
-            <main className='p-5'>
-              <Container>
-                {children}
-              </Container>
-            </main>
-          </Theme>
-        </AuthProvider>
+        <QueryClientProvider>
+          <AuthProvider>
+            <Theme accentColor="grass" grayColor="gray" className={inter.variable}>
+              <Navbar />
+              <main className='p-5'>
+                <Container>
+                  {children}
+                </Container>
+              </main>
+            </Theme>
+          </AuthProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );
