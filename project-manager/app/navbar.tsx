@@ -85,7 +85,14 @@ const AuthStatus = () => {
       <DropdownMenu.Root>
         <DropdownMenu.Trigger>
           <Box width={avatarContainerWidth}>
-            <Avatar className='cursor-pointer' src={session!.user!.image!} fallback='?' size='2' radius='full' />
+            <Avatar
+              className='cursor-pointer'
+              src={session!.user!.image!}
+              fallback='?'
+              size='2'
+              radius='full'
+              referrerPolicy={'no-referrer'}
+            />
           </Box>
         </DropdownMenu.Trigger>
 
