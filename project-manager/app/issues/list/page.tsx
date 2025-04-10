@@ -3,14 +3,29 @@ import { Table } from '@radix-ui/themes'
 // The path to these is @/app/components, which uses the index.ts file in the components
 import { IssueStatusBadge, Link } from '@/app/components'
 import IssueActions from './IssueActions'
-import { Status } from '@prisma/client';
+import { Issue, Status } from '@prisma/client';
+import NextLink from 'next/link';
+import { ArrowUpIcon } from '@radix-ui/react-icons';
 
-interface Props {
-  searchParams: { status: Status }
-}
+// interface Props {
+//   searchParams: { status: Status }
+// }
 
-const Issues = async ({ searchParams }: Props) => {
-  const {status} = await searchParams;
+const Issues = async ({searchParams} : {searchParams:Promise<{status: Status, orderBy: keyof Issue}>}) => {
+  const { status, orderBy, } = await searchParams;
+  const queries = await searchParams;
+
+  const columns: {
+    label: string,
+    value: keyof Issue,
+    className?: string,
+  }[] = [
+      { label: "Issue", value: "title" },
+      // {/* "hidden md:table-cell" == only appears on medium sized screens. So hidden on mobile.  */}
+      { label: "Status", value: "status", className: "hidden md:table-cell" },
+      { label: "Created At", value: "createdAt", className: "hidden md:table-cell" },
+    ]
+
   const statuses = Object.values(Status);
   const validatedStatus = statuses.includes(status) ?
     status
@@ -32,10 +47,20 @@ const Issues = async ({ searchParams }: Props) => {
       <Table.Root variant='surface'>
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeaderCell>Issues</Table.ColumnHeaderCell>
-            {/* 'hidden md:table-cell' == only appears on medium sized screens. So hidden on mobile.  */}
-            <Table.ColumnHeaderCell className='hidden md:table-cell'>Status</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell className='hidden md:table-cell'>Created</Table.ColumnHeaderCell>
+            {columns.map(column => (
+              <Table.ColumnHeaderCell key={column.value} className={column.className}>
+                <NextLink href={{
+                  // add all searchParams, then override order by. This preserves the other search params, such as filtering
+                  query: { ...queries, orderBy: column.value }
+                }}>
+                  {column.label}
+                </NextLink>
+                {/* TODO implement sort by descending */}
+                {column.value === orderBy &&
+                  <ArrowUpIcon className='inline'/>
+                }
+              </Table.ColumnHeaderCell>
+            ))}
           </Table.Row>
         </Table.Header>
 
