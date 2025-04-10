@@ -1,11 +1,29 @@
 import { prisma } from '@/prisma/client'
 import { Table } from '@radix-ui/themes'
 // The path to these is @/app/components, which uses the index.ts file in the components
-import {IssueStatusBadge, Link} from '@/app/components'
+import { IssueStatusBadge, Link } from '@/app/components'
 import IssueActions from './IssueActions'
+import { Status } from '@prisma/client';
 
-const Issues = async () => {
-  const issues = await prisma.issue.findMany();
+interface Props {
+  searchParams: { status: Status }
+}
+
+const Issues = async ({ searchParams }: Props) => {
+  const {status} = await searchParams;
+  const statuses = Object.values(Status);
+  const validatedStatus = statuses.includes(status) ?
+    status
+    :
+    undefined;
+
+  const issues = await prisma.issue.findMany(
+    {
+      where: {
+        status: validatedStatus,
+      }
+    }
+  );
 
   return (
     <div>
