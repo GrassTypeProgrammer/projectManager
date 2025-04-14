@@ -11,7 +11,7 @@ import { ArrowUpIcon } from '@radix-ui/react-icons';
 //   searchParams: { status: Status }
 // }
 
-const Issues = async ({searchParams} : {searchParams:Promise<{status: Status, orderBy: keyof Issue}>}) => {
+const Issues = async ({ searchParams }: { searchParams: Promise<{ status: Status, orderBy: keyof Issue }> }) => {
   const { status, orderBy, } = await searchParams;
   const queries = await searchParams;
 
@@ -32,11 +32,17 @@ const Issues = async ({searchParams} : {searchParams:Promise<{status: Status, or
     :
     undefined;
 
+  const orderByValidated = orderBy && columns.map(column => column.value).includes(orderBy);
+
   const issues = await prisma.issue.findMany(
     {
       where: {
         status: validatedStatus,
-      }
+      },
+      orderBy: orderByValidated ?
+        { [orderBy]: 'asc', }
+        :
+        undefined
     }
   );
 
@@ -57,7 +63,7 @@ const Issues = async ({searchParams} : {searchParams:Promise<{status: Status, or
                 </NextLink>
                 {/* TODO implement sort by descending */}
                 {column.value === orderBy &&
-                  <ArrowUpIcon className='inline'/>
+                  <ArrowUpIcon className='inline' />
                 }
               </Table.ColumnHeaderCell>
             ))}
