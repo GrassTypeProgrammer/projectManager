@@ -1,37 +1,25 @@
-import { prisma } from '@/prisma/client'
-import { Table } from '@radix-ui/themes'
+import { prisma } from '@/prisma/client';
 // The path to these is @/app/components, which uses the index.ts file in the components
-import { IssueStatusBadge, Link } from '@/app/components'
-import IssueActions from './IssueActions'
-import { Issue, Status } from '@prisma/client';
-import NextLink from 'next/link';
-import { ArrowUpIcon } from '@radix-ui/react-icons';
 import Pagination from '@/app/components/Pagination';
+import { Status } from '@prisma/client';
+import IssueActions from './IssueActions';
+import IssueTable, { columnNames, IssueQuery } from './IssueTable';
+import { Flex } from '@radix-ui/themes';
 
 // interface Props {
 //   searchParams: { status: Status }
 // }
 
 interface Props {
-  status: Status,
-  orderBy: keyof Issue,
-  page: string,
+  searchParams: IssueQuery
 }
 
-const Issues = async ({ searchParams }: { searchParams: Promise<Props> }) => {
-  const { status, orderBy, } = await searchParams;
-  const queries = await searchParams;
+const Issues = async (props: Promise<Props>) => {
+  // const Issues = async ({ searchParams }: { searchParams: Promise<Props> }) => {
+  // const { status, orderBy, } = await searchParams;
+  const { searchParams } = await props;
+  const { status, orderBy, page } = await searchParams;
 
-  const columns: {
-    label: string,
-    value: keyof Issue,
-    className?: string,
-  }[] = [
-      { label: "Issue", value: "title" },
-      // {/* "hidden md:table-cell" == only appears on medium sized screens. So hidden on mobile.  */}
-      { label: "Status", value: "status", className: "hidden md:table-cell" },
-      { label: "Created At", value: "createdAt", className: "hidden md:table-cell" },
-    ]
 
   const statuses = Object.values(Status);
   const validatedStatus = statuses.includes(status) ?
@@ -41,9 +29,9 @@ const Issues = async ({ searchParams }: { searchParams: Promise<Props> }) => {
 
   const where = { status: validatedStatus };
 
-  const orderByValidated = orderBy && columns.map(column => column.value).includes(orderBy);
+  const orderByValidated = orderBy && columnNames.includes(orderBy);
 
-  const currentPage = parseInt(queries.page) || 1;
+  const currentPage = parseInt(page) || 1;
   const pageSize = 10;
 
   const issues = await prisma.issue.findMany(
@@ -57,61 +45,18 @@ const Issues = async ({ searchParams }: { searchParams: Promise<Props> }) => {
       take: pageSize
     }
   );
-  
+
   const issueCount = await prisma.issue.count({ where });
 
   return (
-    <div>
+    <Flex direction='column' gap='3'>
       <IssueActions />
-
-      <Table.Root variant='surface'>
-        <Table.Header>
-          <Table.Row>
-            {columns.map(column => (
-              <Table.ColumnHeaderCell key={column.value} className={column.className}>
-                <NextLink href={{
-                  // add all searchParams, then override order by. This preserves the other search params, such as filtering
-                  query: { ...queries, orderBy: column.value }
-                }}>
-                  {column.label}
-                </NextLink>
-                {/* TODO implement sort by descending */}
-                {column.value === orderBy &&
-                  <ArrowUpIcon className='inline' />
-                }
-              </Table.ColumnHeaderCell>
-            ))}
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
-          {issues.map(issue => {
-            return <Table.Row key={issue.id}>
-              <Table.Cell>
-                <Link href={`/issues/${issue.id}`}>
-                  {issue.title}
-                </Link>
-                {/* If md (medium sized device) is hidden */}
-                <div className='block md:hidden'>
-                  <IssueStatusBadge status={issue.status} />
-                </div>
-              </Table.Cell>
-
-              <Table.Cell className='hidden md:table-cell'>
-                <IssueStatusBadge status={issue.status} />
-              </Table.Cell>
-
-              <Table.Cell className='hidden md:table-cell'>
-                {issue.createdAt.toDateString()}
-              </Table.Cell>
-
-            </Table.Row>
-          })}
-        </Table.Body>
-      </Table.Root>
-
-      <Pagination itemCount={issueCount} pageSize={pageSize} currentPage={currentPage} />
-    </div>
+      <IssueTable searchParams={searchParams} issues={issues} />
+    
+      <Flex justify={'center'}>
+        <Pagination itemCount={issueCount} pageSize={pageSize} currentPage={currentPage} />
+      </Flex>
+    </Flex>
   )
 };
 
