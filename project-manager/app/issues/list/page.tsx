@@ -15,12 +15,8 @@ interface Props {
   searchParams: IssueQuery
 }
 
-const Issues = async (props: Promise<Props>) => {
-  // const Issues = async ({ searchParams }: { searchParams: Promise<Props> }) => {
-  // const { status, orderBy, } = await searchParams;
-  const { searchParams } = await props;
-  const { status, orderBy, page } = searchParams;
-
+const Issues = async ({ searchParams }: Props) => {
+  const { status, orderBy, page } = await searchParams;
 
   const statuses = Object.values(Status);
   const validatedStatus = statuses.includes(status) ?
