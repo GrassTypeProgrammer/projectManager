@@ -5,6 +5,7 @@ import { Status } from '@prisma/client';
 import IssueActions from './IssueActions';
 import IssueTable, { columnNames, IssueQuery } from './IssueTable';
 import { Flex } from '@radix-ui/themes';
+import { Metadata } from 'next';
 
 // interface Props {
 //   searchParams: { status: Status }
@@ -18,7 +19,7 @@ const Issues = async (props: Promise<Props>) => {
   // const Issues = async ({ searchParams }: { searchParams: Promise<Props> }) => {
   // const { status, orderBy, } = await searchParams;
   const { searchParams } = await props;
-  const { status, orderBy, page } = await searchParams;
+  const { status, orderBy, page } = searchParams;
 
 
   const statuses = Object.values(Status);
@@ -71,3 +72,8 @@ export const dynamic = 'force-dynamic';
 // export const revalidate = 60;
 
 export default Issues
+
+export const metadata: Metadata={
+  title: 'Issue Tracker - Issue List', 
+  description: 'View all project issues',
+}

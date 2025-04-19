@@ -43,4 +43,15 @@ const DetailPage = async ({ params }: { params: Promise<{ id: string }> }) => {
     )
 }
 
+// Dynamic metadata for SEO
+export async function generateMetadata({params}: {params:{id: string}}){
+    const { id } = await params;
+    const issue = await prisma.issue.findUnique({where: {id: parseInt(id)}});
+    
+    return {
+        title: issue?.title,
+        description: 'Details of issue ' + issue?.id,
+    }
+}
+
 export default DetailPage
