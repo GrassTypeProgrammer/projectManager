@@ -7,14 +7,18 @@ import DeleteIssueButton from '../_components/DeleteIssueButton'
 import { getServerSession } from 'next-auth'
 import authOptions from '@/app/auth/authOptions'
 import AssigneeSelect from './AssigneeSelect'
+import { cache } from 'react'
+
+// Caches result of function and returns the result if this is called multiple times within the same request
+const fetchUser = cache((issueId: number) => {
+    return prisma.issue.findUnique({ where: { id: issueId } });
+})
 
 const DetailPage = async ({ params }: { params: { id: string } }) => {
     const session = await getServerSession(authOptions)
 
     const { id } = await params;
-    const issue = await prisma.issue.findUnique({
-        where: { id: parseInt(id) }
-    })
+    const issue = await fetchUser(parseInt(id));
 
     if (!issue) {
         notFound();
@@ -33,7 +37,7 @@ const DetailPage = async ({ params }: { params: { id: string } }) => {
             {session &&
                 <Box>
                     <Flex direction='column' gap='4'>
-                        <AssigneeSelect issue={issue}/>
+                        <AssigneeSelect issue={issue} />
                         <EditIssueButton issueID={issue.id} />
                         <DeleteIssueButton issueID={issue.id} />
                     </Flex>
@@ -44,9 +48,9 @@ const DetailPage = async ({ params }: { params: { id: string } }) => {
 }
 
 // Dynamic metadata for SEO
-export async function generateMetadata({params}: {params:{id: string}}){
+export async function generateMetadata({ params }: { params: { id: string } }) {
     const { id } = await params;
-    const issue = await prisma.issue.findUnique({where: {id: parseInt(id)}});
+    const issue = await fetchUser(parseInt(id));
 
     return {
         title: issue?.title,
