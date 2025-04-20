@@ -12,11 +12,12 @@ import { Metadata } from 'next';
 // }
 
 interface Props {
-  searchParams: IssueQuery
+  searchParams: Promise<IssueQuery>
 }
 
 const Issues = async ({ searchParams }: Props) => {
-  const { status, orderBy, page } = await searchParams;
+  const awaitedSearchParams = await searchParams;
+  const { status, orderBy, page } = awaitedSearchParams;
 
   const statuses = Object.values(Status);
   const validatedStatus = statuses.includes(status) ?
@@ -48,7 +49,7 @@ const Issues = async ({ searchParams }: Props) => {
   return (
     <Flex direction='column' gap='3'>
       <IssueActions />
-      <IssueTable searchParams={searchParams} issues={issues} />
+      <IssueTable searchParams={awaitedSearchParams} issues={issues} />
     
       <Flex justify={'center'}>
         <Pagination itemCount={issueCount} pageSize={pageSize} currentPage={currentPage} />

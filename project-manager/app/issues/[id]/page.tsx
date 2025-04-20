@@ -14,7 +14,7 @@ const fetchUser = cache((issueId: number) => {
     return prisma.issue.findUnique({ where: { id: issueId } });
 })
 
-const DetailPage = async ({ params }: { params: { id: string } }) => {
+const DetailPage = async ({ params }: { params: Promise<{ id: string }> }) => {
     const session = await getServerSession(authOptions)
 
     const { id } = await params;
@@ -48,7 +48,7 @@ const DetailPage = async ({ params }: { params: { id: string } }) => {
 }
 
 // Dynamic metadata for SEO
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const issue = await fetchUser(parseInt(id));
 
