@@ -1,4 +1,4 @@
-import { prisma } from '@/prisma/client';
+// import { prisma } from '@/prisma/client';
 // The path to these is @/app/components, which uses the index.ts file in the components
 import Pagination from '@/app/components/Pagination';
 import { Status } from '@prisma/client';
@@ -6,6 +6,9 @@ import IssueActions from './IssueActions';
 import IssueTable, { columnNames, IssueQuery } from './IssueTable';
 import { Flex } from '@radix-ui/themes';
 import { Metadata } from 'next';
+import authOptions from '@/app/auth/authOptions';
+import { getServerSession } from 'next-auth';
+import { getIssueCount, getManyIssues } from '../IssueUtil';
 
 // interface Props {
 //   searchParams: { status: Status }
@@ -16,6 +19,7 @@ interface Props {
 }
 
 const Issues = async ({ searchParams }: Props) => {
+  const session = await getServerSession(authOptions);
   const awaitedSearchParams = await searchParams;
   const { status, orderBy, page } = awaitedSearchParams;
 
@@ -25,32 +29,32 @@ const Issues = async ({ searchParams }: Props) => {
     :
     undefined;
 
-  const where = { status: validatedStatus };
-
   const orderByValidated = orderBy && columnNames.includes(orderBy);
 
   const currentPage = parseInt(page) || 1;
   const pageSize = 10;
 
-  const issues = await prisma.issue.findMany(
-    {
-      where,
-      orderBy: orderByValidated ?
-        { [orderBy]: 'asc', }
-        :
-        undefined,
-      skip: (currentPage - 1) * pageSize,
-      take: pageSize
-    }
-  );
+  const issues = await getManyIssues({
+    assignedToUserID: session!.user.id,
+    where: { status: validatedStatus },
+    orderBy: orderByValidated ?
+      { [orderBy]: 'asc', }
+      :
+      undefined,
+    skip: (currentPage - 1) * pageSize,
+    take: pageSize,
+  })
 
-  const issueCount = await prisma.issue.count({ where });
+  const issueCount = await getIssueCount({
+    assignedToUserID: session!.user.id,
+    where: { status: validatedStatus },
+  });
 
   return (
     <Flex direction='column' gap='3'>
       <IssueActions />
       <IssueTable searchParams={awaitedSearchParams} issues={issues} />
-    
+
       <Flex justify={'center'}>
         <Pagination itemCount={issueCount} pageSize={pageSize} currentPage={currentPage} />
       </Flex>
@@ -70,7 +74,7 @@ export const dynamic = 'force-dynamic';
 
 export default Issues
 
-export const metadata: Metadata={
-  title: 'Issue Tracker - Issue List', 
+export const metadata: Metadata = {
+  title: 'Issue Tracker - Issue List',
   description: 'View all project issues',
 }

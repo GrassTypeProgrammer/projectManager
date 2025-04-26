@@ -1,15 +1,19 @@
-import { prisma } from "@/prisma/client";
 import { Status } from "@prisma/client";
 import { Flex, Grid } from "@radix-ui/themes";
 import { Metadata } from "next";
 import IssueChart from "./IssueChart";
 import IssueSummary from "./IssueSummary";
 import LatestIssues from "./LatestIssues";
+import { getIssueCount } from "../issues/IssueUtil";
+import { getServerSession } from "next-auth";
+import authOptions from "../auth/authOptions";
 
 export default async function Home() {
-    const open = await prisma.issue.count({ where: { status: Status.OPEN } });
-    const inProgress = await prisma.issue.count({ where: { status: Status.IN_PROGRESS } });
-    const closed = await prisma.issue.count({ where: { status: Status.CLOSED } });
+    const session = await getServerSession(authOptions);
+
+    const open = await getIssueCount({ assignedToUserID: session!.user.id, where: { status: Status.OPEN } });
+    const inProgress = await getIssueCount({ assignedToUserID: session!.user.id, where: { status: Status.IN_PROGRESS } });
+    const closed = await getIssueCount({ assignedToUserID: session!.user.id, where: { status: Status.CLOSED } });
 
     return (
         <Grid columns={{ initial: '1', md: '2' }} gap='5'>

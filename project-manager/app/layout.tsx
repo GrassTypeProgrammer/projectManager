@@ -8,7 +8,7 @@ import "./globals.css";
 import Navbar from "./navbar";
 import AuthProvider from './auth/Provider';
 import QueryClientProvider from './QueryClientProvider';
-
+import { NextAuthProvider } from './components';
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
 //   subsets: ["latin"],
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   description: "An app for managing your projects",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -47,7 +47,9 @@ export default function RootLayout({
               <Navbar />
               <main className='p-5'>
                 <Container>
-                  {children}
+                  <NextAuthProvider>
+                    {children}
+                  </NextAuthProvider>
                 </Container>
               </main>
             </Theme>

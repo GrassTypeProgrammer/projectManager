@@ -1,6 +1,7 @@
 //Put should be for replacing an object, patch should be for updating an object
 
 import authOptions from "@/app/auth/authOptions";
+import { getUniqueIssue } from "@/app/issues/IssueUtil";
 import { patchIssueSchema } from "@/app/validationSchemas";
 import { prisma } from "@/prisma/client";
 import { getServerSession } from "next-auth";
@@ -42,7 +43,8 @@ export async function PATCH(
     }
 
     // get issue from database
-    const issue = await prisma.issue.findUnique({
+    const issue = await getUniqueIssue({
+        assignedToUserID: assignedToUserID,
         where: { id: parseInt(id) }
     });
 
@@ -80,7 +82,8 @@ export async function DELETE(
     }
 
     const { id } = await params;
-    const issue = await prisma.issue.findUnique({
+    const issue = await getUniqueIssue({
+        assignedToUserID: session!.user.id,
         where: { id: parseInt(id) }
     });
 

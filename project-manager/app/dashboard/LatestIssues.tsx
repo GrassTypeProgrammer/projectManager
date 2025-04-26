@@ -1,10 +1,16 @@
-import { prisma } from '@/prisma/client';
-import { Avatar, Card, Flex, Heading, Table } from '@radix-ui/themes';
+// import { prisma } from '@/prisma/client';
+import { Card, Flex, Heading, Table } from '@radix-ui/themes';
 import Link from 'next/link';
 import { IssueStatusBadge } from '../components';
+import { getManyIssues } from '../issues/IssueUtil';
+import { getServerSession } from 'next-auth';
+import authOptions from '../auth/authOptions';
 
 const LatestIssues = async () => {
-    const issues = await prisma.issue.findMany({
+    const session = await getServerSession(authOptions);
+
+    const issues = await getManyIssues({
+        assignedToUserID: session!.user.id,
         orderBy: { createdAt: 'desc' },
         take: 5,
         include: {
@@ -29,14 +35,14 @@ const LatestIssues = async () => {
                                         <IssueStatusBadge status={issue.status} />
                                     </Flex>
 
-                                    {issue.assignedToUser &&
-                                        <Avatar
+                                    {/* {issue.assignedToUser && */}
+                                    {/* <Avatar
                                             fallback='?'
                                             src={issue.assignedToUser.image!}
                                             size='2'
                                             radius='full'
-                                        />
-                                    }
+                                        /> */}
+                                    {/* } */}
                                 </Flex>
                             </Table.Cell>
                         </Table.Row>
