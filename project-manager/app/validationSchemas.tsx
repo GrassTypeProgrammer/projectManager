@@ -6,9 +6,9 @@ export const issueSchema = z.object({
     description: z.string().min(1, 'description is required.').max(65535),
 });
 
+
+// Don't forget: If a value can be null, use .nullable() 
 export const patchIssueSchema = z.object({
     title: z.string().min(1, 'title is required.').max(255).optional(),
     description: z.string().min(1, 'description is required.').max(65535).optional(),
-    // nullable allows you to set this as null, which will allow us to unassign a user
-    assignedToUserID: z.string().min(1, 'AssignedToUserId is required').max(255).optional().nullable(),
 });

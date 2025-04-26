@@ -6,7 +6,6 @@ import IssueDetails from './IssueDetails'
 import DeleteIssueButton from '../_components/DeleteIssueButton'
 import { getServerSession } from 'next-auth'
 import authOptions from '@/app/auth/authOptions'
-import AssigneeSelect from './AssigneeSelect'
 import { cache } from 'react'
 
 // Caches result of function and returns the result if this is called multiple times within the same request
@@ -37,7 +36,6 @@ const DetailPage = async ({ params }: { params: Promise<{ id: string }> }) => {
             {session &&
                 <Box>
                     <Flex direction='column' gap='4'>
-                        <AssigneeSelect issue={issue} />
                         <EditIssueButton issueID={issue.id} />
                         <DeleteIssueButton issueID={issue.id} />
                     </Flex>
