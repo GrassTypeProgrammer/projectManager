@@ -8,13 +8,19 @@ interface Props {
 }
 // Using 'red' | 'violet' | 'green' instead of string because the badge color doesn't accept any string, it only accepts
 //      predefined color strings.
-const StatusMap: Record<
+export const StatusMap: Record<
     Status,
     { label: string, color: 'red' | 'violet' | 'green' }
 > = {
     OPEN: { label: 'Open', color: 'red' },
     IN_PROGRESS: { label: 'In Progress', color: 'violet' },
     CLOSED: { label: 'Closed', color: 'green' },
+}
+
+export enum Statuses{
+    OPEN,
+    IN_PROGRESS,
+    CLOSED,
 }
 
 const IssueStatusBadge = ({ status }: Props) => {
