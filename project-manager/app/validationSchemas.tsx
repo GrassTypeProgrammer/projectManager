@@ -1,3 +1,4 @@
+import { Status } from "@prisma/client";
 import { z } from "zod";
 
 export const issueSchema = z.object({
@@ -6,9 +7,9 @@ export const issueSchema = z.object({
     description: z.string().min(1, 'description is required.').max(65535),
 });
 
-
 // Don't forget: If a value can be null, use .nullable() 
 export const patchIssueSchema = z.object({
     title: z.string().min(1, 'title is required.').max(255).optional(),
     description: z.string().min(1, 'description is required.').max(65535).optional(),
+    status: z.enum([Status.CLOSED, Status.OPEN, Status.IN_PROGRESS]),
 });

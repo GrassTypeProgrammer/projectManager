@@ -32,8 +32,7 @@ export async function PATCH(
         return NextResponse.json(validation.error.format(), { status: 400 });
     }
 
-    const { title, description } = body;
-
+    const { title, description, status } = body;
 
     // get issue from database
     const issue = await getUniqueIssue({
@@ -54,6 +53,7 @@ export async function PATCH(
         data: {
             title,
             description,
+            status,
         }
     });
 
