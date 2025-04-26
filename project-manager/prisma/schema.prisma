@@ -23,10 +23,10 @@ model Issue {
   status           Status   @default(OPEN)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
-  assignedToUserID String?  @db.VarChar(255)
+  assignedToUserID String  @db.VarChar(255)
   // the items in fields get mapped to the items in references (to the type User)
   // You need to add the reverse relation in the other model
-  assignedToUser   User?    @relation(fields: [assignedToUserID], references: [id])
+  assignedToUser   User    @relation(fields: [assignedToUserID], references: [id])
 }
 
 enum Status {

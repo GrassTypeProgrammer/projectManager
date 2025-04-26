@@ -5,11 +5,11 @@ import { getServerSession } from "next-auth";
 import authOptions from "@/app/auth/authOptions";
 
 export async function POST(request: NextRequest) {
-    const session= await getServerSession(authOptions);
+    const session = await getServerSession(authOptions);
 
-    if(!session){
+    if (!session) {
         // status 401 == unauthorised
-        return NextResponse.json({}, {status: 401});
+        return NextResponse.json({}, { status: 401 });
     }
 
     const body = await request.json();
@@ -19,9 +19,17 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(validation.error.format(), { status: 400 });
     }
 
+    if (!session.user.id) {
+        return NextResponse.json({ error: 'Invalid User' }, { status: 400 });
+    }
+
     const newIssue = await prisma.issue.create({
-        data: { title: body.title, description: body.description },
+        data: {
+            title: body.title,
+            description: body.description,
+            assignedToUserID: session.user.id,
+        },
     })
 
-    return NextResponse.json(newIssue, {status: 201});
+    return NextResponse.json(newIssue, { status: 201 });
 }
