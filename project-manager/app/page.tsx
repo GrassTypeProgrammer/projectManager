@@ -1,5 +1,5 @@
 import { Box, Button, Card, Flex, Heading } from "@radix-ui/themes";
-// import Image from 'next/image';
+import Image from 'next/image';
 import Link from "next/link";
 
 export default async function Home() {
@@ -12,7 +12,7 @@ export default async function Home() {
             Create, edit, and manage your tasks!
           </Heading>
           <Box className="m-5 mb-10">
-            {/* <Image src={"/static/projectManagerDashboard.png"} alt={""} width={1000} height={100} priority={true} /> */}
+            <Image src={"/static/projectManagerDashboard.png"} alt={""} width={1000} height={100} priority={true} />
           </Box>
 
           <p className="mb-2">Manage your project with Project Manager</p>
