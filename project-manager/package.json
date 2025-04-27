@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "prisma:generate": "prisma generate --schema=project-manager/prisma/schema.prisma",
+    "prisma:migrate:dev": "prisma migrate dev --schema=project-manager/prisma/schema.prisma",
+    "prisma:migrate:deploy": "prisma migrate deploy --schema=project-manager/prisma/schema.prisma"
   },
   "dependencies": {
     "@hookform/resolvers": "^4.1.3",
@@ -47,8 +50,5 @@
     "prisma": "^6.6.0",
     "tailwindcss": "^4",
     "typescript": "^5"
-  },
-  "prisma": {
-    "schema": "project-manager/prisma/schema.prisma"
   }
 }
