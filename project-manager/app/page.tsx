@@ -1,5 +1,6 @@
 import { Box, Button, Card, Flex, Heading } from "@radix-ui/themes";
 import Image from 'next/image';
+import Link from "next/link";
 
 export default async function Home() {
 
@@ -15,7 +16,11 @@ export default async function Home() {
           </Box>
 
           <p className="mb-2">Manage your project with Project Manager</p>
-          <Button size={'4'}>Sign Up</Button>
+          <Link href="/api/auth/signin">
+            <Button size={'4'}>
+              Sign Up
+            </Button>
+          </Link>
         </Flex>
       </Card>
     </Flex>
