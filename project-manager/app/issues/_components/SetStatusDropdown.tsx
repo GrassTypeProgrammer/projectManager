@@ -23,8 +23,8 @@ const IssueStatusDropdown = ({ issue }: { issue: Issue }) => {
             <Select.Root
                 defaultValue={issue.status}
                 onValueChange={setStatus}>
-                <Select.Trigger placeholder='Assign...' />
-                <Select.Content>
+                <Select.Trigger  />
+                <Select.Content >
                     <Select.Group >
                         <Select.Label>Statuses:</Select.Label>
                         {
