@@ -36,7 +36,7 @@ export async function PATCH(
 
     // get issue from database
     const issue = await getUniqueIssue({
-        assignedToUserID: session!.user.id,
+        assignedToUserID: session.user.id,
         where: { id: parseInt(id) }
     });
 
@@ -75,7 +75,7 @@ export async function DELETE(
 
     const { id } = await params;
     const issue = await getUniqueIssue({
-        assignedToUserID: session!.user.id,
+        assignedToUserID: session.user.id,
         where: { id: parseInt(id) }
     });
 
