@@ -27,7 +27,7 @@ export async function middleware(req: NextRequest) {
     }
 
     // Not authenticated and trying to access a protected route
-    // return NextResponse.redirect(new URL("/api/auth/signin", req.url));
+    return NextResponse.redirect(new URL("/api/auth/signin", req.url));
 }
 
 export const config = {
