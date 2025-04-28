@@ -47,8 +47,5 @@
     "prisma": "^6.6.0",
     "tailwindcss": "^4",
     "typescript": "^5"
-  },
-  "prisma": {
-    "schema": "./project-manager/prisma/schema.prisma"
   }
 }
