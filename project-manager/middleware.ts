@@ -33,6 +33,6 @@ export async function middleware(req: NextRequest) {
 export const config = {
     // match all routes except these ones.
     matcher: [
-        "/((?!api|_next/static|_next/image|favicon.ico|$).*)",
+        "/((?!api|_next/static|_next/image|favicon.ico|favicon.png|$).*)",
     ],
 }
